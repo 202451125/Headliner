@@ -1,0 +1,158 @@
+package headliner;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class ApiHelper {
+    private static final String BASE_URL = "https://newsapi.org/v2"; // Changed to actual NewsAPI
+    private static final String API_KEY = "5293e2138f024b1a9e68eab6a2035e0d"; // You need to get this from newsapi.org
+
+    // Temporary user storage
+    private static Map<String, String> tempUsers = new HashMap<>();
+    private static final String USER_FILE = "users.txt";
+
+    // --- LOGIN ---
+    public static boolean login(String username, String password) {
+        System.out.println("Login attempt: " + username);
+        
+        // First try database
+        try {
+            DatabaseHelper db = new DatabaseHelper();
+            boolean dbResult = db.validateUser(username, password);
+            if (dbResult) {
+                System.out.println("✅ Login successful via database");
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Database login failed: " + e.getMessage());
+        }
+        
+        // Try to load from file
+        try {
+            loadUsersFromFile();
+        } catch (IOException e) {
+            System.out.println("❌ Could not load users from file: " + e.getMessage());
+        }
+        
+        // Check in-memory storage
+        if (tempUsers.containsKey(username) && tempUsers.get(username).equals(password)) {
+            System.out.println("✅ Login successful via memory storage");
+            return true;
+        }
+        
+        System.out.println("❌ Login failed - user not found");
+        return false;
+    }
+
+    // --- REGISTER ---
+    public static boolean register(String username, String password) {
+        System.out.println("Registration attempt: " + username);
+        
+        // First try database
+        try {
+            DatabaseHelper db = new DatabaseHelper();
+            boolean dbResult = db.registerUser(username, password);
+            if (dbResult) {
+                System.out.println("✅ Registration successful via database");
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Database registration failed: " + e.getMessage());
+        }
+        
+        // Fallback to file-based storage
+        try {
+            // Save to file
+            try (PrintWriter writer = new PrintWriter(new FileWriter(USER_FILE, true))) {
+                writer.println(username + ":" + password);
+            }
+            
+            // Also store in memory
+            tempUsers.put(username, password);
+            
+            System.out.println("✅ Registration successful via file storage");
+            return true;
+        } catch (IOException e) {
+            System.out.println("❌ File registration failed: " + e.getMessage());
+            
+            // Final fallback: in-memory only
+            tempUsers.put(username, password);
+            System.out.println("✅ Registration successful via memory storage");
+            return true;
+        }
+    }
+
+    // Helper method to load users from file
+    private static void loadUsersFromFile() throws IOException {
+        File file = new File(USER_FILE);
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(":");
+                    if (parts.length == 2) {
+                        tempUsers.put(parts[0], parts[1]);
+                    }
+                }
+            }
+        }
+    }
+
+    // --- FETCH TOP HEADLINES ---
+    public static List<Article> fetchTopHeadlines(String country, String category) {
+        List<Article> articles = new ArrayList<>();
+        try {
+            String urlString = String.format("%s/top-headlines?country=%s&category=%s&apiKey=%s", 
+                                           BASE_URL, country, category, API_KEY);
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            int code = conn.getResponseCode();
+            if (code == 200) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        response.append(line.trim());
+                    }
+
+                    JSONObject json = new JSONObject(response.toString());
+                    JSONArray jsonArticles = json.getJSONArray("articles");
+
+                    for (int i = 0; i < jsonArticles.length(); i++) {
+                        JSONObject obj = jsonArticles.getJSONObject(i);
+
+                        String title = obj.optString("title", "No Title");
+                        String description = obj.optString("description", "");
+                        String urlToArticle = obj.optString("url", "");
+                        String imageUrl = obj.optString("urlToImage", "");
+                        String source = obj.getJSONObject("source").optString("name", "");
+                        String publishedAt = obj.optString("publishedAt", "");
+
+                        Article article = new Article(title, description, urlToArticle, imageUrl, source, publishedAt, category, "en");
+                        articles.add(article);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error fetching news: " + e.getMessage());
+            // Add sample data for demo
+            articles.add(new Article("Sample News 1", "This is a sample news description", "https://example.com", 
+                                   "", "Sample Source", "2023-01-01", "general", "en"));
+            articles.add(new Article("Sample News 2", "Another sample news description", "https://example.com", 
+                                   "", "Sample Source", "2023-01-01", "general", "en"));
+        }
+        return articles;
+    }
+}
