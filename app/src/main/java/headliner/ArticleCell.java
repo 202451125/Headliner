@@ -1,12 +1,11 @@
 package headliner;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
 
 public class ArticleCell extends ListCell<Article> {
     private final HBox root = new HBox(12);
@@ -27,7 +26,6 @@ public class ArticleCell extends ListCell<Article> {
 
         contentBox.getChildren().addAll(title, desc);
         root.getChildren().addAll(thumb, contentBox);
-        root.setAlignment(Pos.CENTER_LEFT);
     }
 
     @Override

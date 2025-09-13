@@ -13,8 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ApiHelper {
-    private static final String BASE_URL = "https://newsapi.org/v2"; // Changed to actual NewsAPI
-    private static final String API_KEY = "5293e2138f024b1a9e68eab6a2035e0d"; // You need to get this from newsapi.org
+    private static final String BASE_URL = "https://newsapi.org/v2";
+    // SECURITY: API key from environment variable with fallback
+    private static final String API_KEY = System.getenv().getOrDefault("NEWS_API_KEY", "5293e2138f024b1a9e68eab6a2035e0d");
 
     // Temporary user storage
     private static Map<String, String> tempUsers = new HashMap<>();
@@ -23,6 +24,12 @@ public class ApiHelper {
     // --- LOGIN ---
     public static boolean login(String username, String password) {
         System.out.println("Login attempt: " + username);
+        
+        // SECURITY: Input validation
+        if (username == null || username.length() < 3 || password == null || password.length() < 6) {
+            System.out.println("❌ Invalid username or password format");
+            return false;
+        }
         
         // First try database
         try {
@@ -56,6 +63,12 @@ public class ApiHelper {
     // --- REGISTER ---
     public static boolean register(String username, String password) {
         System.out.println("Registration attempt: " + username);
+        
+        // SECURITY: Input validation
+        if (username == null || username.length() < 3 || password == null || password.length() < 6) {
+            System.out.println("❌ Invalid username or password format");
+            return false;
+        }
         
         // First try database
         try {
@@ -111,12 +124,18 @@ public class ApiHelper {
     public static List<Article> fetchTopHeadlines(String country, String category) {
         List<Article> articles = new ArrayList<>();
         try {
+            // Input validation for API parameters
+            if (country == null || country.length() != 2) {
+                country = "us"; // Default to US
+            }
+            
             String urlString = String.format("%s/top-headlines?country=%s&category=%s&apiKey=%s", 
                                            BASE_URL, country, category, API_KEY);
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
+            conn.setConnectTimeout(10000); // Timeout after 10 seconds
 
             int code = conn.getResponseCode();
             if (code == 200) {
@@ -144,9 +163,11 @@ public class ApiHelper {
                         articles.add(article);
                     }
                 }
+            } else {
+                System.out.println("❌ API Error: HTTP " + code);
             }
         } catch (Exception e) {
-            System.out.println("Error fetching news: " + e.getMessage());
+            System.out.println("❌ Error fetching news: " + e.getMessage());
             // Add sample data for demo
             articles.add(new Article("Sample News 1", "This is a sample news description", "https://example.com", 
                                    "", "Sample Source", "2023-01-01", "general", "en"));

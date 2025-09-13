@@ -12,6 +12,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -27,39 +30,39 @@ public class LoginView {
     }
 
     public Scene createScene() {
-        // Main container with BLACK background
+        // Main container with beige background (#F5EFEB)
         StackPane mainContainer = new StackPane();
-        mainContainer.setStyle("-fx-background-color: #000000;");
+        mainContainer.setStyle("-fx-background-color: #F5EFEB;");
         
-        // Main floating container with shadow - made smaller as requested
+        // Main floating container with shadow
         HBox mainContainerBox = new HBox();
-        mainContainerBox.setStyle("-fx-background-color: transparent; -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.15), 25, 0, 0, 0);");
-        mainContainerBox.setMaxSize(1000, 580);
+        mainContainerBox.setStyle("-fx-background-color: transparent; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 30, 0, 0, 0);");
+        mainContainerBox.setMaxSize(1100, 650);
         
-        // Inner content container with rounded corners
+        // Inner content container
         HBox content = new HBox();
-        content.setStyle("-fx-background-radius: 15;");
-        content.setMaxSize(1000, 580);
+        content.setStyle("-fx-background-radius: 20;");
+        content.setMaxSize(1100, 650);
         
-        // Left side - Animation with darker blue background
+        // Left side - Animation with #2F4156 background
         VBox leftSide = new VBox();
         leftSide.setAlignment(Pos.CENTER);
-        leftSide.setPrefWidth(450);
+        leftSide.setPrefWidth(500);
         
-        // Create darker blue background for left side
-        Rectangle leftBackground = new Rectangle(450, 580);
-        leftBackground.setFill(Color.web("#2A3B4D")); // Darker shade for animation background
+        // Create background for left side
+        Rectangle leftBackground = new Rectangle(500, 650);
+        leftBackground.setFill(Color.web("#2F4156"));
         
         StackPane leftContainer = new StackPane(leftBackground);
         leftContainer.setAlignment(Pos.CENTER);
-        leftContainer.setStyle("-fx-background-color: #2A3B4D; -fx-background-radius: 15 0 0 15;");
+        leftContainer.setStyle("-fx-background-color: #2F4156; -fx-background-radius: 20 0 0 20;");
         
         try {
             ImageView animation = new ImageView(new Image(getClass().getResourceAsStream("/headliner_login_animation.gif")));
-            animation.setFitWidth(380);
-            animation.setFitHeight(380);
+            animation.setFitWidth(420);
+            animation.setFitHeight(420);
             animation.setPreserveRatio(true);
-            animation.setStyle("-fx-effect: dropshadow(gaussian, rgba(134,172,217,0.5), 30, 0, 0, 0);");
+            animation.setStyle("-fx-effect: dropshadow(gaussian, rgba(86,124,189,0.4), 30, 0, 0, 0);");
             leftContainer.getChildren().add(animation);
         } catch (Exception e) {
             Label placeholder = new Label("Animation Placeholder");
@@ -70,92 +73,92 @@ public class LoginView {
         leftSide.getChildren().add(leftContainer);
         
         // Right side - Login form with #567CBD background
-        VBox rightSide = new VBox(20);
+        VBox rightSide = new VBox(25);
         rightSide.setAlignment(Pos.CENTER);
-        rightSide.setPadding(new Insets(40, 45, 40, 45));
-        rightSide.setPrefWidth(550);
+        rightSide.setPadding(new Insets(50, 60, 50, 60));
+        rightSide.setPrefWidth(600);
         
         // Create background for right side
-        Rectangle rightBackground = new Rectangle(550, 580);
+        Rectangle rightBackground = new Rectangle(600, 650);
         rightBackground.setFill(Color.web("#567CBD"));
         
         StackPane rightContainer = new StackPane(rightBackground, rightSide);
         rightContainer.setAlignment(Pos.CENTER);
-        rightContainer.setStyle("-fx-background-radius: 0 15 15 0;");
+        rightContainer.setStyle("-fx-background-radius: 0 20 20 0;");
         
         // Title
         Label title = new Label("Welcome to Headliner");
-        title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #FFFFFF;");
-        title.setFont(Font.font("System", FontWeight.EXTRA_BOLD, 28));
+        title.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #FFFFFF;");
+        title.setFont(Font.font("System", FontWeight.EXTRA_BOLD, 32));
         
         Label subtitle = new Label("Your news companion");
-        subtitle.setStyle("-fx-font-size: 14px; -fx-text-fill: #E0E6F5; -fx-font-style: italic;");
+        subtitle.setStyle("-fx-font-size: 16px; -fx-text-fill: #E0E6F5; -fx-font-style: italic;");
         
         // Form
-        VBox form = new VBox(15);
+        VBox form = new VBox(20);
         form.setAlignment(Pos.CENTER_LEFT);
-        form.setMaxWidth(350);
+        form.setMaxWidth(400);
         
         // Username field
         Label userLabel = new Label("Username:");
-        userLabel.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 13px;");
+        userLabel.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 14px;");
         TextField userField = new TextField();
         userField.setPromptText("Enter your username");
-        userField.setStyle("-fx-padding: 12; -fx-background-radius: 8; -fx-border-radius: 8; " +
+        userField.setStyle("-fx-padding: 15; -fx-background-radius: 10; -fx-border-radius: 10; " +
                            "-fx-border-color: #7A9BD4; -fx-background-color: #3E5F9E; " +
-                           "-fx-font-size: 13px; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #A8BFE8;");
+                           "-fx-font-size: 14px; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #A8BFE8;");
         
-        // Password field - CORRECTED LINES
+        // Password field
         Label passLabel = new Label("Password:");
-        passLabel.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 13px;");
+        passLabel.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 14px;");
         PasswordField passField = new PasswordField();
         passField.setPromptText("Enter your password");
-        passField.setStyle("-fx-padding: 12; -fx-background-radius: 8; -fx-border-radius: 8; " +
-                          "-fx-border-color: #7A9BD4; -fx-background-color: #3E5F9E; " +
-                          "-fx-font-size: 13px; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #A8BFE8;");
+        passField.setStyle("-fx-padding: 15; -fx-background-radius: 10; -fx-border-radius: 10; " +
+                           "-fx-border-color: #7A9BD4; -fx-background-color: #3E5F9E; " +
+                           "-fx-font-size: 14px; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #A8BFE8;");
         
         // Buttons
-        HBox buttons = new HBox(15);
+        HBox buttons = new HBox(20);
         buttons.setAlignment(Pos.CENTER);
         
         Button loginBtn = new Button("Login");
         loginBtn.setStyle("-fx-background-color: #CBD9B6; " +
-                          "-fx-text-fill: #2F4156; -fx-font-weight: bold; -fx-font-size: 14px; " +
-                          "-fx-padding: 12 35; -fx-background-radius: 8; " +
-                          "-fx-effect: dropshadow(gaussian, rgba(203,217,182,0.4), 8, 0, 0, 2); " +
+                          "-fx-text-fill: #2F4156; -fx-font-weight: bold; -fx-font-size: 16px; " +
+                          "-fx-padding: 15 45; -fx-background-radius: 10; " +
+                          "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3); " +
                           "-fx-cursor: hand;");
         loginBtn.setOnMouseEntered(e -> loginBtn.setStyle("-fx-background-color: #D9E5C7; " +
-                                                          "-fx-text-fill: #2F4156; -fx-font-weight: bold; -fx-font-size: 14px; " +
-                                                          "-fx-padding: 12 35; -fx-background-radius: 8; " +
-                                                          "-fx-effect: dropshadow(gaussian, rgba(203,217,182,0.5), 10, 0, 0, 3); " +
+                                                          "-fx-text-fill: #2F4156; -fx-font-weight: bold; -fx-font-size: 16px; " +
+                                                          "-fx-padding: 15 45; -fx-background-radius: 10; " +
+                                                          "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 4); " +
                                                           "-fx-cursor: hand;"));
         loginBtn.setOnMouseExited(e -> loginBtn.setStyle("-fx-background-color: #CBD9B6; " +
-                                                         "-fx-text-fill: #2F4156; -fx-font-weight: bold; -fx-font-size: 14px; " +
-                                                         "-fx-padding: 12 35; -fx-background-radius: 8; " +
-                                                         "-fx-effect: dropshadow(gaussian, rgba(203,217,182,0.4), 8, 0, 0, 2); " +
+                                                         "-fx-text-fill: #2F4156; -fx-font-weight: bold; -fx-font-size: 16px; " +
+                                                         "-fx-padding: 15 45; -fx-background-radius: 10; " +
+                                                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3); " +
                                                          "-fx-cursor: hand;"));
         loginBtn.setOnAction(e -> handleLogin(userField.getText(), passField.getText()));
         
         Button registerBtn = new Button("Register");
         registerBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #CBD9B6; " +
                              "-fx-border-color: #CBD9B6; -fx-border-width: 2; " +
-                             "-fx-padding: 10 32; -fx-background-radius: 8; -fx-border-radius: 8; " +
-                             "-fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;");
-        registerBtn.setOnMouseEntered(e -> registerBtn.setStyle("-fx-background-color: rgba(203,217,182,0.15); " +
+                             "-fx-padding: 13 40; -fx-background-radius: 10; -fx-border-radius: 10; " +
+                             "-fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;");
+        registerBtn.setOnMouseEntered(e -> registerBtn.setStyle("-fx-background-color: rgba(203,217,182,0.2); " +
                                                                 "-fx-text-fill: #D9E5C7; " +
                                                                 "-fx-border-color: #D9E5C7; -fx-border-width: 2; " +
-                                                                "-fx-padding: 10 32; -fx-background-radius: 8; -fx-border-radius: 8; " +
-                                                                "-fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;"));
+                                                                "-fx-padding: 13 40; -fx-background-radius: 10; -fx-border-radius: 10; " +
+                                                                "-fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;"));
         registerBtn.setOnMouseExited(e -> registerBtn.setStyle("-fx-background-color: transparent; " +
                                                                "-fx-text-fill: #CBD9B6; " +
                                                                "-fx-border-color: #CBD9B6; -fx-border-width: 2; " +
-                                                               "-fx-padding: 10 32; -fx-background-radius: 8; -fx-border-radius: 8; " +
-                                                               "-fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;"));
+                                                               "-fx-padding: 13 40; -fx-background-radius: 10; -fx-border-radius: 10; " +
+                                                               "-fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;"));
         registerBtn.setOnAction(e -> handleRegister(userField.getText(), passField.getText()));
         
         buttons.getChildren().addAll(loginBtn, registerBtn);
         
-        statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 13px; -fx-font-weight: bold;");
+        statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 14px; -fx-font-weight: bold;");
         
         // Build form
         form.getChildren().addAll(
@@ -181,13 +184,13 @@ public class LoginView {
         fadeIn.setToValue(1);
         fadeIn.play();
         
-        return new Scene(mainContainer, 1100, 650);
+        return new Scene(mainContainer, 1200, 700);
     }
 
     private void handleLogin(String username, String password) {
         if (username.isEmpty() || password.isEmpty()) {
             statusLabel.setText("Please enter both username and password");
-            statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 13px; -fx-font-weight: bold;");
+            statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 14px; -fx-font-weight: bold;");
             
             // Shake animation for error
             TranslateTransition shake = new TranslateTransition(Duration.millis(300), statusLabel);
@@ -203,7 +206,7 @@ public class LoginView {
         boolean success = ApiHelper.login(username, password);
         if (success) {
             statusLabel.setText("Login successful! Redirecting...");
-            statusLabel.setStyle("-fx-text-fill: #CBD9B6; -fx-font-size: 13px; -fx-font-weight: bold;");
+            statusLabel.setStyle("-fx-text-fill: #CBD9B6; -fx-font-size: 14px; -fx-font-weight: bold;");
             
             // Pulse animation for success
             ScaleTransition pulse = new ScaleTransition(Duration.millis(500), statusLabel);
@@ -223,7 +226,7 @@ public class LoginView {
             pause.play();
         } else {
             statusLabel.setText("Login failed. Please check credentials.");
-            statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 13px; -fx-font-weight: bold;");
+            statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 14px; -fx-font-weight: bold;");
             
             // Shake animation for error
             TranslateTransition shake = new TranslateTransition(Duration.millis(300), statusLabel);
@@ -238,7 +241,7 @@ public class LoginView {
     private void handleRegister(String username, String password) {
         if (username.isEmpty() || password.isEmpty()) {
             statusLabel.setText("Please enter both username and password");
-            statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 13px; -fx-font-weight: bold;");
+            statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 14px; -fx-font-weight: bold;");
             
             // Shake animation for error
             TranslateTransition shake = new TranslateTransition(Duration.millis(300), statusLabel);
@@ -254,7 +257,7 @@ public class LoginView {
         boolean success = ApiHelper.register(username, password);
         if (success) {
             statusLabel.setText("Registration successful! You can now login.");
-            statusLabel.setStyle("-fx-text-fill: #CBD9B6; -fx-font-size: 13px; -fx-font-weight: bold;");
+            statusLabel.setStyle("-fx-text-fill: #CBD9B6; -fx-font-size: 14px; -fx-font-weight: bold;");
             
             // Pulse animation for success
             ScaleTransition pulse = new ScaleTransition(Duration.millis(500), statusLabel);
@@ -265,7 +268,7 @@ public class LoginView {
             pulse.play();
         } else {
             statusLabel.setText("Registration failed. Username may exist.");
-            statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 13px; -fx-font-weight: bold;");
+            statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 14px; -fx-font-weight: bold;");
             
             // Shake animation for error
             TranslateTransition shake = new TranslateTransition(Duration.millis(300), statusLabel);

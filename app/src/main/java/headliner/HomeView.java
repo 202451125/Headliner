@@ -1,12 +1,19 @@
 package headliner;
 
 import javafx.application.Platform;
-import javafx.collections.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.awt.Desktop;
@@ -31,12 +38,12 @@ public class HomeView {
         Label title = new Label("📰 Headliner");
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-        // Language Selector
-        ComboBox<String> langSelector = new ComboBox<>();
-        langSelector.getItems().addAll("us", "in", "gb", "fr", "de");
-        langSelector.setValue(country);
-        langSelector.setOnAction(ev -> {
-            country = langSelector.getValue();
+        // Country Selector
+        ComboBox<String> countrySelector = new ComboBox<>();
+        countrySelector.getItems().addAll("us", "in", "gb", "fr", "de");
+        countrySelector.setValue(country);
+        countrySelector.setOnAction(ev -> {
+            country = countrySelector.getValue();
             loadArticles();
         });
 
@@ -52,7 +59,7 @@ public class HomeView {
             }
         });
 
-        HBox topBar = new HBox(12, title, langSelector, themeToggle);
+        HBox topBar = new HBox(12, title, countrySelector, themeToggle);
         topBar.setPadding(new Insets(10));
         topBar.setStyle("-fx-alignment: center-left;");
 
@@ -80,7 +87,7 @@ public class HomeView {
                     try {
                         Desktop.getDesktop().browse(new URI(sel.getUrl()));
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        System.out.println("❌ Could not open browser: " + ex.getMessage());
                     }
                 }
             }
@@ -101,13 +108,23 @@ public class HomeView {
 
     private void loadArticles() {
         articles.clear();
+        
+        // Show loading message
+        articles.add(new Article("Loading news...", "Please wait while we fetch the latest articles", ""));
 
         CompletableFuture.supplyAsync(() -> ApiHelper.fetchTopHeadlines(country, category))
                 .thenAccept(result -> Platform.runLater(() -> {
                     articles.setAll(result);
                     if (result.isEmpty()) {
-                        articles.add(new Article("No articles found", "Try changing category or country.", ""));
+                        articles.add(new Article("No articles found", "Try changing category or country", ""));
                     }
-                }));
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        articles.clear();
+                        articles.add(new Article("Error loading news", "Please check your internet connection", ""));
+                    });
+                    return null;
+                });
     }
 }
