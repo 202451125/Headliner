@@ -6,8 +6,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+<<<<<<< HEAD
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+=======
+>>>>>>> fedec1065c6b9237717e0e8de2583da1bbcc5612
 
 public class ArticleCell extends ListCell<Article> {
     private final HBox root = new HBox(20);
@@ -56,7 +59,10 @@ public class ArticleCell extends ListCell<Article> {
         contentBox.setStyle("-fx-padding: 15 0;");
         
         root.getChildren().addAll(thumb, contentBox);
+<<<<<<< HEAD
         root.setStyle("-fx-padding: 20; -fx-background-radius: 16;");
+=======
+>>>>>>> fedec1065c6b9237717e0e8de2583da1bbcc5612
     }
 
     @Override
