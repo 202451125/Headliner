@@ -19,4 +19,5 @@ public class DashboardView {
         root.setAlignment(Pos.CENTER);
         return new Scene(root, 800, 600);
     }
+    
 }

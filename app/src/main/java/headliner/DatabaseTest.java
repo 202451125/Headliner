@@ -5,7 +5,6 @@ public class DatabaseTest {
         System.out.println("Testing database connection...");
         
         DatabaseHelper db = new DatabaseHelper();
-        db.testDatabase();
         
         // Test registration
         boolean result = db.registerUser("testuser", "testpass");

@@ -4,13 +4,18 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class App extends Application {
-
     @Override
     public void start(Stage stage) {
-        LoginView login = new LoginView(stage);
-        stage.setScene(login.createScene());
-        stage.setTitle("Login - Headliner");
-        stage.show();
+        try {
+            // Start directly with HomeView
+            HomeView home = new HomeView(stage);
+            stage.setScene(home.createScene());
+            stage.setTitle("Headliner - Your News App");
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Error starting application: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

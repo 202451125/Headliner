@@ -19,6 +19,10 @@ dependencies {
     
     // SQLite JDBC driver
     implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
+
+    dependencies {
+    implementation 'org.json:json:20230227'
+}
 }
 
 application {

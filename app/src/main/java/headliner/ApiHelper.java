@@ -13,8 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ApiHelper {
-    private static final String BASE_URL = "https://newsapi.org/v2"; // Changed to actual NewsAPI
-    private static final String API_KEY = "5293e2138f024b1a9e68eab6a2035e0d"; // You need to get this from newsapi.org
+    private static final String BASE_URL = "https://newsapi.org/v2";
+    private static final String API_KEY = "5293e2138f024b1a9e68eab6a2035e0d";
 
     // Temporary user storage
     private static Map<String, String> tempUsers = new HashMap<>();
@@ -55,14 +55,18 @@ public class ApiHelper {
 
     // --- REGISTER ---
     public static boolean register(String username, String password) {
-        System.out.println("Registration attempt: " + username);
+        return registerWithEmail(username, null, password);
+    }
+
+    public static boolean registerWithEmail(String username, String email, String password) {
+        System.out.println("Registration attempt: " + username + " Email: " + email);
         
-        // First try database
+        // First try database with email
         try {
             DatabaseHelper db = new DatabaseHelper();
-            boolean dbResult = db.registerUser(username, password);
+            boolean dbResult = db.registerUserWithEmail(username, email, password);
             if (dbResult) {
-                System.out.println("✅ Registration successful via database");
+                System.out.println("✅ Registration successful via database with email");
                 return true;
             }
         } catch (Exception e) {
@@ -154,5 +158,59 @@ public class ApiHelper {
                                    "", "Sample Source", "2023-01-01", "general", "en"));
         }
         return articles;
+    }
+
+    // --- SEARCH ARTICLES --- (ADD THIS METHOD)
+    public static List<Article> searchArticles(String query, String language) {
+        List<Article> articles = new ArrayList<>();
+        try {
+            String urlString = String.format("%s/everything?q=%s&language=%s&sortBy=publishedAt&apiKey=%s", 
+                                           BASE_URL, query, language, API_KEY);
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            int code = conn.getResponseCode();
+            if (code == 200) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        response.append(line.trim());
+                    }
+
+                    JSONObject json = new JSONObject(response.toString());
+                    JSONArray jsonArticles = json.getJSONArray("articles");
+
+                    for (int i = 0; i < jsonArticles.length(); i++) {
+                        JSONObject obj = jsonArticles.getJSONObject(i);
+
+                        String title = obj.optString("title", "No Title");
+                        String description = obj.optString("description", "");
+                        String urlToArticle = obj.optString("url", "");
+                        String imageUrl = obj.optString("urlToImage", "");
+                        String source = obj.getJSONObject("source").optString("name", "");
+                        String publishedAt = obj.optString("publishedAt", "");
+
+                        Article article = new Article(title, description, urlToArticle, imageUrl, source, publishedAt, "search", language);
+                        articles.add(article);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error searching news: " + e.getMessage());
+            // Return empty list instead of sample data for search
+        }
+        return articles;
+    }
+
+    // --- NEW METHODS FOR SESSION MANAGEMENT ---
+    public static boolean isUserLoggedIn() {
+        return UserSessionManager.isUserLoggedIn();
+    }
+
+    public static String getCurrentUsername() {
+        return UserSessionManager.getCurrentUser();
     }
 }
