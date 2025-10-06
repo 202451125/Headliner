@@ -105,6 +105,7 @@ public class LoginView {
                            "-fx-border-color: #7A9BD4; -fx-background-color: #3E5F9E; " +
                            "-fx-font-size: 13px; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #A8BFE8;");
         
+<<<<<<< HEAD
         // Email field (NEW)
         Label emailLabel = new Label("Email (optional for notifications):");
         emailLabel.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 13px;");
@@ -122,11 +123,17 @@ public class LoginView {
         passwordContainer.setSpacing(5);
         passwordContainer.setAlignment(Pos.CENTER_LEFT);
         
+=======
+        // Password field - CORRECTED LINES
+        Label passLabel = new Label("Password:");
+        passLabel.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 13px;");
+>>>>>>> fedec1065c6b9237717e0e8de2583da1bbcc5612
         PasswordField passField = new PasswordField();
         passField.setPromptText("Enter your password");
         passField.setStyle("-fx-padding: 12; -fx-background-radius: 8; -fx-border-radius: 8; " +
                           "-fx-border-color: #7A9BD4; -fx-background-color: #3E5F9E; " +
                           "-fx-font-size: 13px; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #A8BFE8;");
+<<<<<<< HEAD
         passField.setPrefWidth(280);
         
         TextField visiblePassField = new TextField();
@@ -156,6 +163,9 @@ public class LoginView {
         
         passwordContainer.getChildren().addAll(passField, visiblePassField, eyeButton);
 
+=======
+        
+>>>>>>> fedec1065c6b9237717e0e8de2583da1bbcc5612
         // Buttons
         HBox buttons = new HBox(15);
         buttons.setAlignment(Pos.CENTER);
@@ -193,17 +203,28 @@ public class LoginView {
                                                                "-fx-border-color: #CBD9B6; -fx-border-width: 2; " +
                                                                "-fx-padding: 10 32; -fx-background-radius: 8; -fx-border-radius: 8; " +
                                                                "-fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;"));
+<<<<<<< HEAD
         registerBtn.setOnAction(e -> handleRegister(userField.getText(), emailField.getText(), passField.getText()));
+=======
+        registerBtn.setOnAction(e -> handleRegister(userField.getText(), passField.getText()));
+>>>>>>> fedec1065c6b9237717e0e8de2583da1bbcc5612
         
         buttons.getChildren().addAll(loginBtn, registerBtn);
         
         statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 13px; -fx-font-weight: bold;");
         
+<<<<<<< HEAD
         // Build form (UPDATED with email field)
         form.getChildren().addAll(
             userLabel, userField,
             emailLabel, emailField,
             passLabel, passwordContainer
+=======
+        // Build form
+        form.getChildren().addAll(
+            userLabel, userField,
+            passLabel, passField
+>>>>>>> fedec1065c6b9237717e0e8de2583da1bbcc5612
         );
         
         rightSide.getChildren().addAll(title, subtitle, form, buttons, statusLabel);
@@ -278,8 +299,12 @@ public class LoginView {
         }
     }
 
+<<<<<<< HEAD
     // UPDATED handleRegister method with email
     private void handleRegister(String username, String email, String password) {
+=======
+    private void handleRegister(String username, String password) {
+>>>>>>> fedec1065c6b9237717e0e8de2583da1bbcc5612
         if (username.isEmpty() || password.isEmpty()) {
             statusLabel.setText("Please enter both username and password");
             statusLabel.setStyle("-fx-text-fill: #FFD166; -fx-font-size: 13px; -fx-font-weight: bold;");
@@ -295,6 +320,7 @@ public class LoginView {
             return;
         }
 
+<<<<<<< HEAD
         boolean success = false;
         try {
             DatabaseHelper db = new DatabaseHelper();
@@ -304,6 +330,9 @@ public class LoginView {
             success = ApiHelper.register(username, password);
         }
 
+=======
+        boolean success = ApiHelper.register(username, password);
+>>>>>>> fedec1065c6b9237717e0e8de2583da1bbcc5612
         if (success) {
             statusLabel.setText("Registration successful! You can now login.");
             statusLabel.setStyle("-fx-text-fill: #CBD9B6; -fx-font-size: 13px; -fx-font-weight: bold;");
