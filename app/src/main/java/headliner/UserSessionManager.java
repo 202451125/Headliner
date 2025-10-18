@@ -5,6 +5,7 @@ import java.util.prefs.Preferences;
 public class UserSessionManager {
     private static final Preferences prefs = Preferences.userNodeForPackage(UserSessionManager.class);
     private static String currentUser = null;
+    private static int currentUserId = -1; // ADDED THIS
     private static boolean isLoggedIn = false;
 
     public static void loginUser(String username) {
@@ -13,8 +14,9 @@ public class UserSessionManager {
         prefs.put("currentUser", username);
         prefs.putBoolean("isLoggedIn", true);
         
-        // Load user preferences
+        // Load user preferences and ID
         DatabaseHelper db = new DatabaseHelper();
+        currentUserId = db.getUserId(username); // ADDED THIS
         String theme = db.getUserTheme(username);
         String profilePic = db.getUserProfilePic(username);
         prefs.put("theme", theme);
@@ -23,12 +25,10 @@ public class UserSessionManager {
 
     public static void logoutUser() {
         currentUser = null;
+        currentUserId = -1; // ADDED THIS
         isLoggedIn = false;
         prefs.remove("currentUser");
         prefs.remove("isLoggedIn");
-        prefs.remove("googleLogin");
-        prefs.remove("googleEmail");
-        prefs.remove("googleName");
         prefs.remove("theme");
         prefs.remove("profilePic");
     }
@@ -36,7 +36,11 @@ public class UserSessionManager {
     public static boolean isUserLoggedIn() {
         if (!isLoggedIn) {
             isLoggedIn = prefs.getBoolean("isLoggedIn", false);
-            currentUser = prefs.get("currentUser", null);
+            if (isLoggedIn) {
+                currentUser = prefs.get("currentUser", null);
+                DatabaseHelper db = new DatabaseHelper();
+                currentUserId = db.getUserId(currentUser); // ADDED THIS
+            }
         }
         return isLoggedIn;
     }
@@ -48,23 +52,21 @@ public class UserSessionManager {
         return currentUser;
     }
 
+    // ADDED THIS METHOD
+    public static int getCurrentUserId() {
+        if (currentUserId == -1 && isUserLoggedIn()) {
+            DatabaseHelper db = new DatabaseHelper();
+            currentUserId = db.getUserId(getCurrentUser());
+        }
+        return currentUserId;
+    }
+
     public static String getCurrentUserEmail() {
         if (isUserLoggedIn()) {
             DatabaseHelper db = new DatabaseHelper();
             return db.getUserEmail(getCurrentUser());
         }
         return null;
-    }
-
-    public static void saveGoogleUser(String email, String name) {
-        prefs.put("googleEmail", email);
-        prefs.put("googleName", name);
-        prefs.putBoolean("googleLogin", true);
-        loginUser(name);
-    }
-
-    public static boolean isGoogleLogin() {
-        return prefs.getBoolean("googleLogin", false);
     }
 
     public static String getTheme() {

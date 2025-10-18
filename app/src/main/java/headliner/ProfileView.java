@@ -40,7 +40,7 @@ public class ProfileView {
             scene.getStylesheets().add(cssPath);
             System.out.println("✅ CSS loaded successfully for ProfileView");
         } catch (Exception e) {
-            System.out.println("⚠️ CSS file not found for ProfileView, using inline styles");
+            System.out.println("⚠ CSS file not found for ProfileView, using inline styles");
         }
         
         return scene;
@@ -211,7 +211,7 @@ public class ProfileView {
                 // Create a colored placeholder
                 profilePicView.setImage(null);
                 profilePicView.setStyle("-fx-background-color: #667eea; -fx-background-radius: 60;");
-                System.out.println("⚠️ Avatar not found: " + picName);
+                System.out.println("⚠ Avatar not found: " + picName);
             }
         } catch (Exception e) {
             System.out.println("❌ Error loading avatar: " + e.getMessage());
@@ -288,7 +288,7 @@ public class ProfileView {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("⚠️ Could not load avatar: " + avatar);
+                System.out.println("⚠ Could not load avatar: " + avatar);
             }
         }
         
